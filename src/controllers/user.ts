@@ -3,7 +3,7 @@ import { replaceFilterOptions } from '../utils/replacers';
 import { PrismaClient } from '@prisma/client';
 import { AuthToken } from '../utils/tokens';
 import * as argon2 from 'argon2';
-import { app } from '../server'; // Make sure to export your app instance
+import { app } from '../index'; // Make sure to export your app instance
 
 const prisma = new PrismaClient();
 
