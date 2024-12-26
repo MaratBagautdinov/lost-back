@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Добро пожаловать в Lost
+    body
+        div(style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;")
+            h1(style="color: #333;") Добро пожаловать в Lost
+            
+            p Дорогой #{second_name} #{name} #{last_name},
+            
+            div(style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;")
+                p Ваши данные для авторизации:
+                p 
+                    strong Email: 
+                    span #{email}
+                p 
+                    strong Password: 
+                    span #{password}
+            
+            p Рекомендуем изменить пароль в вашем профиле

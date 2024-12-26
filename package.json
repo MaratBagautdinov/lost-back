@@ -1,0 +1,37 @@
+{
+  "name": "lost-back",
+  "version": "1.0.0",
+  "main": "server.ts",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "npx prisma generate --schema=./prisma/schema.prisma && tsc"
+  },
+  "repository": "https://github.com/PROLABA/LOST-BACK.git",
+  "author": "Marat <marat.bagautdinov522@mail.ru>",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/adapter-pg": "^6.1.0",
+    "@prisma/client": "^6.1.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "argon2": "^0.41.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-mailer": "^0.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1",
+    "prisma": "^6.1.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

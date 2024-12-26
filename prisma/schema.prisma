@@ -1,0 +1,276 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id                Int                 @id @default(autoincrement())
+  email             String              @unique
+  active            Boolean             @default(true)
+  name              String
+  second_name       String?             @default("")
+  last_name         String?             @default("")
+  work_notes        String?             @default("")
+  work_phone        String?             @default("")
+  personal_photo    String?             @default("")
+  groups_id         Int[]               @default([])
+  salary            Int?                @default(0)
+  percent           Int?                @default(0)
+  password          String
+  fines             fines[]
+  date_create       DateTime            @default(now())
+  awards            awards[]
+  vacation_packages vacation_packages[]
+  additional_income additional_income[]
+  order_discount    order_discount[]
+}
+
+model user_groups {
+  id          Int      @id @default(autoincrement())
+  name        String
+  date_create DateTime @default(now())
+}
+
+model cash_box {
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  color               String?               @default("#fff")
+  order               order[]
+  quest               quest[]
+  refund              refund[]
+  expense             expense[]
+  payment             payment[]
+  date_create         DateTime              @default(now())
+  order_actor_percent order_actor_percent[]
+  order_discount      order_discount[]
+}
+
+model order {
+  id                  Int                   @id @default(autoincrement())
+  sum                 Int
+  players_count       Int?                  @default(0)
+  quest_id            Int
+  date_create         DateTime              @default(now())
+  date_execution      DateTime              @default(now())
+  slot                String
+  admin               Int?                  @default(0)
+  cash_box            cash_box              @relation(fields: [cash_box_id], references: [id], onDelete: Cascade)
+  cash_box_id         Int
+  addition_admin      Int?                  @default(0)
+  status_id           Int                   @default(1)
+  quest_cost          Int
+  agency_fee_value    Int?                  @default(0)
+  discount            Int?                  @default(0)
+  quest_name          String?               @default("")
+  dop_players_cost    Int?                  @default(0)
+  actors_ids          Int[]                 @default([])
+  client_phone        String?               @default("")
+  client_name         String?               @default("")
+  refund              refund[]
+  payment             payment[]
+  order_actor_percent order_actor_percent[]
+  order_discount      order_discount[]
+}
+
+model quest {
+  id          Int      @id @default(autoincrement())
+  rest_id     Int
+  cash_box    cash_box @relation(fields: [cash_box_id], references: [id], onDelete: Cascade)
+  cash_box_id Int
+  date_create DateTime @default(now())
+}
+
+model refund {
+  id                Int            @id @default(autoincrement())
+  order             order          @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  order_id          Int
+  cash_box          cash_box       @relation(fields: [cash_box_id], references: [id], onDelete: Cascade)
+  cash_box_id       Int
+  payment_method    payment_method @relation(fields: [payment_method_id], references: [id], onDelete: Cascade)
+  payment_method_id Int
+  value             Int
+  label             String?        @default("")
+  date_create       DateTime       @default(now())
+}
+
+model expense {
+  id                Int            @id @default(autoincrement())
+  cash_box          cash_box       @relation(fields: [cash_box_id], references: [id], onDelete: Cascade)
+  cash_box_id       Int
+  payment_method    payment_method @relation(fields: [payment_method_id], references: [id], onDelete: Cascade)
+  payment_method_id Int
+  value             Int
+  label             String?        @default("")
+  date_create       DateTime       @default(now())
+}
+
+model payment {
+  id                Int            @id @default(autoincrement())
+  order             order          @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  order_id          Int
+  cash_box          cash_box       @relation(fields: [cash_box_id], references: [id], onDelete: Cascade)
+  cash_box_id       Int
+  payment_method    payment_method @relation(fields: [payment_method_id], onDelete: Cascade, references: [id])
+  payment_method_id Int
+  value             Int
+  label             String?        @default("")
+  date_create       DateTime       @default(now())
+}
+
+model payment_method {
+  id          Int        @id @default(autoincrement())
+  name        String
+  refund      refund[]
+  expense     expense[]
+  payment     payment[]
+  document    document[]
+  date_create DateTime   @default(now())
+}
+
+model event {
+  id          Int      @id @default(autoincrement())
+  title       String?  @default("")
+  content     String?  @default("")
+  preview     String?  @default("")
+  date_create DateTime @default(now())
+}
+
+model document {
+  id               Int             @id @default(autoincrement())
+  file             String
+  name             String
+  group            documents_group @relation(fields: [group_id], onDelete: Cascade, references: [id])
+  group_id         Int
+  payment_method   payment_method? @relation(fields: [payment_methodId], references: [id])
+  payment_methodId Int?            @default(0)
+  date_create      DateTime        @default(now())
+}
+
+model fines {
+  id          Int      @id @default(autoincrement())
+  name        String
+  value       Int
+  user        user     @relation(fields: [user_id], onDelete: Cascade, references: [id])
+  user_id     Int
+  date_create DateTime @default(now())
+}
+
+model awards {
+  id          Int      @id @default(autoincrement())
+  name        String
+  value       Int
+  user        user     @relation(fields: [user_id], onDelete: Cascade, references: [id])
+  user_id     Int
+  date_create DateTime @default(now())
+}
+
+model documents_group {
+  id          Int        @id @default(autoincrement())
+  name        String
+  parent_id   Int?       @default(0)
+  document    document[]
+  date_create DateTime   @default(now())
+}
+
+model expenses_types {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model additions {
+  id             Int              @id @default(autoincrement())
+  name           String
+  cost           Int
+  admin_pay      Int
+  order_discount order_discount[]
+}
+
+model discounts {
+  id               Int              @id @default(autoincrement())
+  name             String
+  default_type     String
+  agency_fee_type  String
+  default_value    Int
+  agency_fee_value Int
+  is_agency_fee    Boolean
+  order_discount   order_discount[]
+}
+
+model status_order {
+  id       Int    @id @default(autoincrement())
+  name     String
+  color    String
+  priority Int
+}
+
+model order_actor_percent {
+  id             Int      @id @default(autoincrement())
+  order          order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  order_id       Int
+  cash_box       cash_box @relation(fields: [cash_box_id], references: [id], onDelete: Cascade)
+  cash_box_id    Int
+  actor_id       Int
+  value          Int
+  date_create    DateTime @default(now())
+  date_execution DateTime @default(now())
+}
+
+model additions_by_order {
+  id          Int      @id @default(autoincrement())
+  order_id    Int
+  cash_box_id Int
+  addition_id Int
+  admin_pay   Int
+  name        String
+  value       Int
+  date_create DateTime @default(now())
+}
+
+model vacation_packages {
+  id          Int      @id @default(autoincrement())
+  value       Int
+  user        user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     Int
+  date_create DateTime @default(now())
+}
+
+model additional_income {
+  id          Int      @id @default(autoincrement())
+  user        user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     Int
+  value       Int
+  name        Int
+  date_create DateTime @default(now())
+}
+
+model order_discount {
+  id             Int        @id @default(autoincrement())
+  order          order      @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  order_id       Int
+  discount       discounts  @relation(fields: [discount_id], references: [id], onDelete: Cascade)
+  discount_id    Int
+  admin_pay      Int?
+  name           String
+  is_agent       Boolean?   @default(false)
+  discount_value Int
+  date_create    DateTime   @default(now())
+  date_execution DateTime   @default(now())
+  user           user?      @relation(fields: [userId], references: [id])
+  userId         Int?
+  cash_box       cash_box?  @relation(fields: [cash_boxId], references: [id])
+  cash_boxId     Int?
+  additions      additions? @relation(fields: [additionsId], references: [id])
+  additionsId    Int?
+}
+
+model help {
+  id          Int      @id @default(autoincrement())
+  label       String
+  value       String
+  link        String?  @default("")
+  date_create DateTime @default(now())
+}
